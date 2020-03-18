@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
  * @author Andrejs Zmakins
  */
 @ApiModel(description="Details about the airport.")
-@Entity
+@Entity(name = "Airport")
 public class Airport {
 
     @Id
@@ -23,6 +23,7 @@ public class Airport {
 
     @NotBlank
     @ApiModelProperty
+    @Size(max=32)
     private String name;
 
     @Size(min=3, max=3, message="Should be exactly three characters.")
@@ -33,11 +34,11 @@ public class Airport {
     protected Airport() { }
 
     //TODO: This is for test purposes! Remove it!
-    public Airport(int id, String name, String iata) {
+    /*public Airport(int id, String name, String iata) {
         this.id = id;
         this.name = name;
         this.iata = iata;
-    }
+    }*/
 
     public Airport(@NotBlank String name,
                    @Size(min = 3, max = 3, message = "Should be exactly three characters.") String iata) {
@@ -69,5 +70,14 @@ public class Airport {
 
     public void setIata(String iata) {
         this.iata = iata;
+    }
+
+    @Override
+    public String toString() {
+        return "Airport{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", iata='" + iata + '\'' +
+                '}';
     }
 }

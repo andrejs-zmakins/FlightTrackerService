@@ -70,7 +70,7 @@ public class AirportController {
                     .path("/{id}")
                     .buildAndExpand(savedAirport.getId()).toUri();
 
-            log.error("Airport ID {} created: {}, {}", savedAirport.getId(), savedAirport.getName(), savedAirport.getIata());
+            log.info("Airport ID {} created: {}, {}", savedAirport.getId(), savedAirport.getName(), savedAirport.getIata());
 
             return ResponseEntity.created(location).build();
         }
