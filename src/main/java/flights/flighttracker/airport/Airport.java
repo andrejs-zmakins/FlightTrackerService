@@ -31,14 +31,9 @@ public class Airport {
     private String iata;
 
 
+    // Necessary for the framework.
     protected Airport() { }
 
-    //TODO: This is for test purposes! Remove it!
-    /*public Airport(int id, String name, String iata) {
-        this.id = id;
-        this.name = name;
-        this.iata = iata;
-    }*/
 
     public Airport(@NotBlank String name,
                    @Size(min = 3, max = 3, message = "Should be exactly three characters.") String iata) {

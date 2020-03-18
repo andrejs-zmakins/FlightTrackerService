@@ -1,7 +1,6 @@
 package flights.flighttracker;
 
 import flights.flighttracker.airport.Airport;
-import flights.flighttracker.airport.AirportDaoService;
 import flights.flighttracker.airport.AirportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,15 +15,10 @@ public class AirportDaoServiceCommandLineRunner implements CommandLineRunner {
 
 
     @Autowired
-    private AirportDaoService airportDaoService;
-
-
-    @Autowired
     private AirportRepository airportRepository;
 
 
     private void saveEntity(Airport airport) {
-        //airportDaoService.save(airport);
         airportRepository.save(airport);
         log.info("Airport saved: {}", airport);
     }
