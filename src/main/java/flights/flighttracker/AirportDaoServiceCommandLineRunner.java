@@ -27,5 +27,6 @@ public class AirportDaoServiceCommandLineRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         saveEntity(new Airport("Heathrow", "LHR"));
+        saveEntity(new Airport("Hoskins", "HKN"));
     }
 }
