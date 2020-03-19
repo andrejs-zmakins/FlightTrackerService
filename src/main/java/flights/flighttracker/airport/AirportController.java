@@ -43,6 +43,22 @@ public class AirportController {
     }
 
 
+    // Query parameter
+    @DeleteMapping("/airports")
+    public void deleteUserQueryParam(@RequestParam Integer id)
+    {
+        airportRepository.deleteById(id);
+    }
+
+    
+    // Path parameter
+    @DeleteMapping("/airports/{id}")
+    public void deleteUserPathParam(@PathVariable Integer id)
+    {
+        airportRepository.deleteById(id);
+    }
+
+
     @PostMapping("/airports")
     public ResponseEntity<Object> createAirport(@RequestBody Airport airport) {
 
