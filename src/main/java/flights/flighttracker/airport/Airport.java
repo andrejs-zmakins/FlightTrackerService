@@ -35,6 +35,15 @@ public class Airport {
     protected Airport() { }
 
 
+    public Airport(int id, String name, String iata) {
+        super();
+
+        this.id = id;
+        this.name = name;
+        this.iata = iata;
+    }
+
+
     public Airport(@NotBlank String name,
                    @Size(min = 3, max = 3, message = "Should be exactly three characters.") String iata) {
         super();
