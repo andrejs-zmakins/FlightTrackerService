@@ -63,18 +63,23 @@ public class AirportController {
     public ResponseEntity<Object> createAirport(@RequestBody Airport airport) {
 
         if (airport.getIata() == null || airport.getName() == null) {
+            log.warn("Attempt to register an airport with incomplete data");
             throw new AirportCreationException("Necessary data not provided!");
         }
 
         if (!IATA_CODE_PATTERN.matcher(airport.getIata()).matches()) {
+            log.warn("Attempt to register an airport with incorrect data");
             throw new AirportCreationException("IATA code format incorrect!");
+        }
+
+        if (airportRepository.findAll().stream().anyMatch(ap -> airport.getIata().equals(ap.getIata()))) {
+            log.warn("Attempt to register an airport twice");
+            throw new AirportCreationException("IATA code already registered!");
         }
 
         Airport savedAirport = airportRepository.save(airport);
 
         if (savedAirport == null) {
-            // TODO: Reason for that? DB error? IATA already exists? Etc?
-
             log.error("Cannot save airport to database!");
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
