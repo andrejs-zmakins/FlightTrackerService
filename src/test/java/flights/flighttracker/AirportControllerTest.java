@@ -82,6 +82,16 @@ public class AirportControllerTest {
 
         Assert.state(airportRepository.findAll().size() == 2, "Airport not added!");
 
+        // IATA codes should be unique
+        try {
+            controller.createAirport(new Airport("Amsterdam", "AMS"));
+            Assert.isTrue(false, "No exception on duplicate IATA codes!");
+        } catch (AirportCreationException e) {
+            // Should go here
+        }
+
+        Assert.state(airportRepository.findAll().size() == 2, "Airport not added!");
+
         // Four letter IATA
         try {
             controller.createAirport(new Airport("Qwerty", "QWER"));
