@@ -45,16 +45,18 @@ public class AirportController {
 
     // Query parameter
     @DeleteMapping("/airports")
-    public void deleteUserQueryParam(@RequestParam Integer id)
+    public void deleteAirportQueryParam(@RequestParam Integer id)
     {
+        // TODO: Consider checking whether an airport with such ID exists and returning status.
         airportRepository.deleteById(id);
     }
 
-    
+
     // Path parameter
     @DeleteMapping("/airports/{id}")
-    public void deleteUserPathParam(@PathVariable Integer id)
+    public void deleteAirportPathParam(@PathVariable Integer id)
     {
+        // TODO: Consider checking whether an airport with such ID exists and returning status.
         airportRepository.deleteById(id);
     }
 
