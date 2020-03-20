@@ -11,21 +11,13 @@ public class Flights {
 	@JsonProperty("data")
 	List<Flight> data;
 
-	public Flights() {
-
+	protected Flights() {
+		//do nothing because default constructor required by JPA
 	}
 
 	public List<Flight> getFlights() {
 		return data;
 	}
 
-	public void setFlights(List<Flight> data) {
-		this.data = data;
-	}
-
-	@Override
-	public String toString() {
-		return "Response [flights=" + data + "]";
-	}
 
 }

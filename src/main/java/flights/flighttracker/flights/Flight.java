@@ -61,7 +61,8 @@ public class Flight {
 	@Column(name = "arrival_actual_time")
 	private String arrivalActualTime;
 
-	public Flight() {
+	protected Flight() {
+		//do nothing because default constructor needed by JPA
 	}
 
 	public Date getFlightDate() {
