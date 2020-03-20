@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FlightRepository extends JpaRepository<Flight, Integer> {
 	
-	Flight findByFlightDateAndFlightNumberAndAirlineNameAndDepartureAirport(Date flight_date, String flight_number, String airline, String departure_airport);
+	Flight findByFlightDateAndFlightNumberAndAirlineNameAndDepartureAirport(Date flightDate, String flightNumber, String airline, String departureAirport);
 
 }
