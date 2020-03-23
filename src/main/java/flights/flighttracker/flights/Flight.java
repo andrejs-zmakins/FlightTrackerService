@@ -61,7 +61,7 @@ public class Flight {
 	@Column(name = "arrival_actual_time")
 	private String arrivalActualTime;
 
-	protected Flight() {
+	public Flight() {
 		//do nothing because default constructor needed by JPA
 	}
 
@@ -177,15 +177,6 @@ public class Flight {
 	@JsonProperty("airline")
 	private void unpackNestedAirline(Map<String, Object> airline) {
 		this.airlineName = (String) airline.get("name");
-	}
-
-	@Override
-	public String toString() {
-		return "Flight [id=" + id + ", flightDate=" + flightDate + ", status=" + status + ", flightNumber="
-				+ flightNumber + ", airlineName=" + airlineName + ", departureAirport=" + departureAirport
-				+ ", departureAirportIata=" + departureAirportIata + ", departureActualTime=" + departureActualTime
-				+ ", arrivalAirport=" + arrivalAirport + ", arrivalAirportIata=" + arrivalAirportIata
-				+ ", arrivalActualTime=" + arrivalActualTime + "]";
 	}
 
 }
