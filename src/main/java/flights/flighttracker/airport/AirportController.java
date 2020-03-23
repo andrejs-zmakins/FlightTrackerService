@@ -2,6 +2,7 @@ package flights.flighttracker.airport;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,8 +48,11 @@ public class AirportController {
     @DeleteMapping("/airports")
     public void deleteAirportQueryParam(@RequestParam Integer id)
     {
-        // TODO: Consider checking whether an airport with such ID exists and returning status.
-        airportRepository.deleteById(id);
+        try {
+            airportRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new AirportControllerException("Airport entity with ID#" + id + " not found!");
+        }
     }
 
 
@@ -56,8 +60,11 @@ public class AirportController {
     @DeleteMapping("/airports/{id}")
     public void deleteAirportPathParam(@PathVariable Integer id)
     {
-        // TODO: Consider checking whether an airport with such ID exists and returning status.
-        airportRepository.deleteById(id);
+        try {
+            airportRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new AirportControllerException("Airport entity with ID#" + id + " not found!");
+        }
     }
 
 
@@ -66,17 +73,17 @@ public class AirportController {
 
         if (airport.getIata() == null || airport.getName() == null) {
             log.warn("Attempt to register an airport with incomplete data");
-            throw new AirportCreationException("Necessary data not provided!");
+            throw new AirportControllerException("Necessary data not provided!");
         }
 
         if (!IATA_CODE_PATTERN.matcher(airport.getIata()).matches()) {
             log.warn("Attempt to register an airport with incorrect data");
-            throw new AirportCreationException("IATA code format incorrect!");
+            throw new AirportControllerException("IATA code format incorrect!");
         }
 
         if (airportRepository.findAll().stream().anyMatch(ap -> airport.getIata().equals(ap.getIata()))) {
             log.warn("Attempt to register an airport twice");
-            throw new AirportCreationException("IATA code already registered!");
+            throw new AirportControllerException("IATA code already registered!");
         }
 
         Airport savedAirport = airportRepository.save(airport);
