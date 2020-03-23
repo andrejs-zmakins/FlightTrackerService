@@ -2,7 +2,7 @@ package flights.flighttracker;
 
 import flights.flighttracker.airport.Airport;
 import flights.flighttracker.airport.AirportController;
-import flights.flighttracker.airport.AirportControllerException;
+import flights.flighttracker.airport.AirportCreationException;
 import flights.flighttracker.airport.AirportRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,7 +86,7 @@ public class AirportControllerTest {
         try {
             controller.createAirport(new Airport("Amsterdam", "AMS"));
             Assert.isTrue(false, "No exception on duplicate IATA codes!");
-        } catch (AirportControllerException e) {
+        } catch (AirportCreationException e) {
             // Should go here
         }
 
@@ -96,7 +96,7 @@ public class AirportControllerTest {
         try {
             controller.createAirport(new Airport("Qwerty", "QWER"));
             Assert.isTrue(false, "No exception on incorrect IATA!");
-        } catch (AirportControllerException e) {
+        } catch (AirportCreationException e) {
             // Should go here
         }
 
@@ -104,7 +104,7 @@ public class AirportControllerTest {
         try {
             controller.createAirport(new Airport("Qwerty", "QW"));
             Assert.isTrue(false, "No exception on incorrect IATA!");
-        } catch (AirportControllerException e) {
+        } catch (AirportCreationException e) {
             // Should go here
         }
 
@@ -112,7 +112,7 @@ public class AirportControllerTest {
         try {
             controller.createAirport(new Airport("Qwerty", "qwe"));
             Assert.isTrue(false, "No exception on incorrect IATA!");
-        } catch (AirportControllerException e) {
+        } catch (AirportCreationException e) {
             // Should go here
         }
 
@@ -120,7 +120,7 @@ public class AirportControllerTest {
         try {
             controller.createAirport(new Airport(null, "qwe"));
             Assert.isTrue(false, "No exception on null airport name!");
-        } catch (AirportControllerException e) {
+        } catch (AirportCreationException e) {
             // Should go here
         }
 
@@ -128,7 +128,7 @@ public class AirportControllerTest {
         try {
             controller.createAirport(new Airport("Qwerty", null));
             Assert.isTrue(false, "No exception on IATA == null!");
-        } catch (AirportControllerException e) {
+        } catch (AirportCreationException e) {
             // Should go here
         }
 

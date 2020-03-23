@@ -53,6 +53,9 @@ public class AirportControllerEndpointTest {
         mockMvc.perform( get("/airports/1") )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"));
+
+        mockMvc.perform( get("/airports/1111") )
+                .andExpect(status().isNotFound());
     }
 
 
@@ -73,13 +76,13 @@ public class AirportControllerEndpointTest {
     @Test
     public void test5DeleteAirportFailurePathParam() throws Exception {
         mockMvc.perform( delete("/airports/123") )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
 
     @Test
     public void test6DeleteAirportFailureQueryParam() throws Exception {
         mockMvc.perform( delete("/airports/?id=234") )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }
