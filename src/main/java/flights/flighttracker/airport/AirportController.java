@@ -1,5 +1,9 @@
 package flights.flighttracker.airport;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -16,6 +20,7 @@ import java.util.regex.Pattern;
  * Controller for Airport endpoint.
  * @author Andrejs Zmakins
  */
+@Api(value = "AirportController", description = "REST APIs related to Airport entities")
 @RestController
 public class AirportController {
 
@@ -30,6 +35,10 @@ public class AirportController {
     }
 
 
+    @ApiOperation(value = "Get list of airports to observe",
+        response = Iterable.class,
+        tags = "AirportController")
+    @ApiResponse(code = 200, message = "Success|OK")
     @GetMapping("/airports")
     public List<Airport> listAirports() {
         log.info("List Airports request received");
@@ -37,6 +46,12 @@ public class AirportController {
     }
 
 
+    @ApiOperation(value = "Get airport by ID",
+        response = Airport.class,
+        tags = "AirportController")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success|OK"),
+        @ApiResponse(code = 404, message = "Airport with such ID not found!") })
     @GetMapping("/airports/{id}")
     public Airport getAirportById(@PathVariable int id) {
         log.info("Get Airport by ID request received");
@@ -52,6 +67,10 @@ public class AirportController {
     }
 
 
+    @ApiOperation(value = "Delete airport airport by ID", tags = "AirportController")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success|OK"),
+        @ApiResponse(code = 404, message = "Airport with such ID not found!") })
     // Query parameter
     @DeleteMapping("/airports")
     public void deleteAirportQueryParam(@RequestParam Integer id) {
@@ -59,6 +78,11 @@ public class AirportController {
     }
 
 
+    @ApiOperation(value = "Delete airport airport by ID", tags = "AirportController")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success|OK"),
+        @ApiResponse(code = 404, message = "Airport with such ID not found!")
+    })
     // Path parameter
     @DeleteMapping("/airports/{id}")
     public void deleteAirportPathParam(@PathVariable Integer id) {
@@ -75,6 +99,13 @@ public class AirportController {
     }
 
 
+    @ApiOperation(value = "Register airport",
+        response = ResponseEntity.class,
+        tags = "AirportController")
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "Success|OK"),
+        @ApiResponse(code = 400, message = "Bad Request|Incorrect data provided"),
+        @ApiResponse(code = 500, message = "Internal server error")})
     @PostMapping("/airports")
     public ResponseEntity<Object> createAirport(@RequestBody Airport airport) {
 
