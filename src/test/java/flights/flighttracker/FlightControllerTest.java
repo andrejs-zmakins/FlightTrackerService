@@ -139,10 +139,8 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 		flights.addAll(departingflights.getFlights());
 		flights.addAll(arrivingflights.getFlights());
 
-		Mockito.when(flightService.getAllFlights(Mockito.anyString())).thenReturn(flights);
-		Mockito.when(flightService.getFlightsForAirport(Mockito.anyString(),Mockito.anyString())).thenReturn(flights);
-		
-		System.out.println("Mocked flight service return:" + flightService.getAllFlights("dummyKey"));
+		Mockito.when(flightService.getAllFlights()).thenReturn(flights);
+		Mockito.when(flightService.getFlightsForAirport(Mockito.anyString())).thenReturn(flights);
 		
 		Mockito.when(restTemplate
 				.getForObject(Mockito.startsWith("http://api.aviationstack.com/v1/flights?access_key="), Mockito.any()))
@@ -152,7 +150,7 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 
 	@Test
 	public void testGetFlights() throws Exception {
-		mockMvc.perform(get("/flights/dummyKey")).andExpect(status().isOk())
+		mockMvc.perform(get("/flights")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"))
 				.andExpect(content().string(org.hamcrest.Matchers.containsString("flightNumber")));
 
@@ -169,14 +167,10 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 	@Test
 	public void testSaveOrUpdateFlights() throws Exception {
 
-		mockMvc.perform(MockMvcRequestBuilders.post("/flights/save/dummyKey")
-				.contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(flights))).andExpect(status().isOk())
+		mockMvc.perform(MockMvcRequestBuilders.post("/flights/save")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 		// check for update
-		mockMvc.perform(MockMvcRequestBuilders.post("/flights/save/dummyKey")
-				.contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(flights))).andExpect(status().isOk())
+		mockMvc.perform(MockMvcRequestBuilders.post("/flights/save")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 	}
 
@@ -190,7 +184,7 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 	@Test
 	public void testGetFlightsForAirportIata() throws Exception {
 
-		mockMvc.perform(get("/flights/dummyKey/LHR")).andExpect(status().isOk())
+		mockMvc.perform(get("/flights/LHR")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"))
 				.andExpect(content().string(org.hamcrest.Matchers.containsString("flightNumber")));
 	}

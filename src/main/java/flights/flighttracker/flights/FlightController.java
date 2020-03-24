@@ -5,14 +5,11 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import flights.flighttracker.airport.Airport;
-import flights.flighttracker.airport.AirportRepository;
 
 @RestController
 public class FlightController {
@@ -29,28 +26,28 @@ public class FlightController {
         this.flightService=flightService;
     }
 
-	@GetMapping("/flights/{apiKey}")
-	public List<Flight> getFlights(@PathVariable String apiKey) {
+	@GetMapping("/flights")
+	public List<Flight> getFlights() {
 		log.info("List all flights request received.");
 		
 
-		return flightService.getAllFlights(apiKey);
+		return flightService.getAllFlights();
 
 	}
 
-	@GetMapping("/flights/{apiKey}/{iata}")
-	public List<Flight> getFlightsForAirport(@PathVariable String apiKey , @PathVariable String iata) {
+	@GetMapping("/flights/{iata}")
+	public List<Flight> getFlightsForAirport(@PathVariable String iata) {
 
 		log.info("List flights related to specific airport request received.");
 
-		return flightService.getFlightsForAirport(iata, apiKey);
+		return flightService.getFlightsForAirport(iata);
 
 	}
 
-	@PostMapping("/flights/save/{apiKey}")
-	public List<Flight> saveFlights(@PathVariable String apiKey) {
+	@PostMapping("/flights/save")
+	public List<Flight> saveFlights() {
 		log.info("Save flights post request received.");
-		List<Flight> receivedFlights = flightService.getAllFlights(apiKey);
+		List<Flight> receivedFlights = flightService.getAllFlights();
 
 		List<Flight> savedFlights = new ArrayList<>();
 		for (Flight flight : receivedFlights) {
