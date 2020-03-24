@@ -3,6 +3,8 @@ package flights.flighttracker.flights;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +23,7 @@ public class FlightService {
 
 	private static final String API_URI_FLIGHTS = "http://api.aviationstack.com/v1/flights?access_key=";
 
-	@Autowired
-	private String getApiKey;
+	private String apiKey;
 
 	private final AirportRepository airportRepository;
 
@@ -38,20 +39,19 @@ public class FlightService {
 		return new RestTemplate();
 	}
 
-	@Cacheable(value = "flights")
+	@Cacheable("flights")
 	public List<Flight> getAllFlights() {
-		log.info("Retrieving all flights from external API");
-
+		log.info("Retrieving data from External API");
 		List<Flight> flights = new ArrayList<>();
-		List<String> iataList = getAiportIatas();
+		List<String> iataList = getAirportIatas();
 
 		for (String iata : iataList) {
 			restTemplate = new RestTemplate();
-			final String uriDeparting = API_URI_FLIGHTS + getApiKey + "&dep_iata=" + iata;
+			final String uriDeparting = API_URI_FLIGHTS + apiKey + "&dep_iata=" + iata;
 			Flights departing = restTemplate.getForObject(uriDeparting, Flights.class);
 			flights.addAll(departing.getFlights());
 
-			final String uriArriving = API_URI_FLIGHTS + getApiKey + "&arr_iata=" + iata;
+			final String uriArriving = API_URI_FLIGHTS + apiKey + "&arr_iata=" + iata;
 			Flights arriving = restTemplate.getForObject(uriArriving, Flights.class);
 			flights.addAll(arriving.getFlights());
 
@@ -70,16 +70,15 @@ public class FlightService {
 	}
 
 	public List<Flight> getFlightsForAirport(String iata) {
-		log.info("Retrieving all flights by airport IATA from external API");
 		List<Flight> flights = new ArrayList<>();
 
 		restTemplate = new RestTemplate();
 
-		final String uriDeparting = API_URI_FLIGHTS + getApiKey + "&dep_iata=" + iata;
+		final String uriDeparting = API_URI_FLIGHTS + apiKey + "&dep_iata=" + iata;
 		Flights departing = restTemplate.getForObject(uriDeparting, Flights.class);
 		flights.addAll(departing.getFlights());
 
-		final String uriArriving = API_URI_FLIGHTS + getApiKey + "&arr_iata=" + iata;
+		final String uriArriving = API_URI_FLIGHTS + apiKey + "&arr_iata=" + iata;
 		Flights arriving = restTemplate.getForObject(uriArriving, Flights.class);
 		flights.addAll(arriving.getFlights());
 
@@ -87,7 +86,7 @@ public class FlightService {
 
 	}
 
-	public List<String> getAiportIatas() {
+	private List<String> getAirportIatas() {
 		List<Airport> airports = airportRepository.findAll();
 		List<String> iataList = new ArrayList<>();
 		for (Airport airport : airports) {
@@ -96,4 +95,8 @@ public class FlightService {
 		return iataList;
 	}
 
+	@Resource(name = "getApiKey")
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
 }
