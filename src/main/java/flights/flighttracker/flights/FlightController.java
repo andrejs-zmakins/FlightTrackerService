@@ -5,11 +5,12 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 
 @RestController
 public class FlightController {
@@ -20,17 +21,17 @@ public class FlightController {
 
 	private final FlightService flightService;
 
+	@Autowired
+	private CacheManager cacheManager;
 
-    public FlightController(FlightRepository flightRepository, FlightService flightService) {
-        this.flightRepository = flightRepository;
-        this.flightService=flightService;
-    }
+	public FlightController(FlightRepository flightRepository, FlightService flightService) {
+		this.flightRepository = flightRepository;
+		this.flightService = flightService;
+	}
 
 	@GetMapping("/flights")
 	public List<Flight> getFlights() {
 		log.info("List all flights request received.");
-		
-
 		return flightService.getAllFlights();
 
 	}
@@ -85,6 +86,13 @@ public class FlightController {
 		log.info("List saved flights request received.");
 		return flightRepository.findAll();
 	}
-	
+
+	public CacheManager getCacheManager() {
+		return cacheManager;
+	}
+
+	public void setCacheManager(CacheManager cacheManager) {
+		this.cacheManager = cacheManager;
+	}
 
 }
