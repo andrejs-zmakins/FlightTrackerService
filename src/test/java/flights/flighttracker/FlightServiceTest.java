@@ -30,8 +30,11 @@ public class FlightServiceTest {
     private AirportRepository airportRepository;
 
 
+    private FlightService flightService;
+
+
     @Before
-    public void setup() {
+    public void setup() throws IOException {
         List<Airport> airportList = new LinkedList<Airport>(){{
             add(new Airport(1, "Heathrow", "LHR"));
         }};
@@ -56,24 +59,28 @@ public class FlightServiceTest {
                     return airport;
                 }
         );
+
+        InputStream input = FlightServiceTest.class.getClassLoader().getResourceAsStream("test.properties");
+
+        Properties props = new Properties();
+        props.load(input);
+        String apiKey = props.getProperty("aviationStack.apiKey");
+
+        flightService = new FlightService(airportRepository);
+
+        flightService.setApiKey(apiKey);
     }
 
 
     @Test
-    public void test() {
-        try (InputStream input = FlightServiceTest.class.getClassLoader().getResourceAsStream("test.properties"))
-        {
-            Properties props = new Properties();
-            props.load(input);
-            String apiKey = props.getProperty("aviationStack.apiKey");
+    public void testGetAllFlights() {
+        Assert.isTrue(flightService.getAllFlights() != null, "Some data must be returned");
+    }
 
-            FlightService flightService = new FlightService(airportRepository);
 
-            flightService.setApiKey(apiKey);
-
-            Assert.isTrue(flightService.getAllFlights() != null, "Some data must be returned");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @Test
+    public void testGetFlightsForAirport() {
+        Assert.isTrue(flightService.getFlightsForAirport("LHR") != null,
+                "Some data must be returned");
     }
 }
