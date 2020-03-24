@@ -2,6 +2,7 @@ package flights.flighttracker.airport;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,25 +40,38 @@ public class AirportController {
     @GetMapping("/airports/{id}")
     public Airport getAirportById(@PathVariable int id) {
         log.info("Get Airport by ID request received");
-        return airportRepository.findById(id).orElse(null);
+
+        Airport airport = airportRepository.findById(id).orElse(null);
+
+        if (airport == null)
+        {
+            throw new AirportNotFoundException("Airport entity with ID#" + id + " not found!");
+        }
+
+        return airport;
     }
 
 
     // Query parameter
     @DeleteMapping("/airports")
-    public void deleteAirportQueryParam(@RequestParam Integer id)
-    {
-        // TODO: Consider checking whether an airport with such ID exists and returning status.
-        airportRepository.deleteById(id);
+    public void deleteAirportQueryParam(@RequestParam Integer id) {
+        deleteAirportById(id);
     }
 
 
     // Path parameter
     @DeleteMapping("/airports/{id}")
-    public void deleteAirportPathParam(@PathVariable Integer id)
-    {
-        // TODO: Consider checking whether an airport with such ID exists and returning status.
-        airportRepository.deleteById(id);
+    public void deleteAirportPathParam(@PathVariable Integer id) {
+        deleteAirportById(id);
+    }
+
+
+    private void deleteAirportById(Integer id) {
+        try {
+            airportRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new AirportNotFoundException("Airport entity with ID#" + id + " not found!");
+        }
     }
 
 

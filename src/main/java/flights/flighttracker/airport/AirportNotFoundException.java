@@ -4,12 +4,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Exception for airport creation errors.
+ * Airport not found exception.
  * @author Andrejs Zmakins
  */
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class AirportCreationException extends RuntimeException {
-    public AirportCreationException(String message) {
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class AirportNotFoundException extends RuntimeException {
+    public AirportNotFoundException(String message) {
         super(message);
     }
 }

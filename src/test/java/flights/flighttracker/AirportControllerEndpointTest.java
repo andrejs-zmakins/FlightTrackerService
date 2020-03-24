@@ -3,7 +3,10 @@ package flights.flighttracker;
 import flights.flighttracker.airport.AirportController;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -21,7 +24,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see AirportController
  * @author Andrejs Zmakins
  */
-public class AirportControllerEndpointTest extends FlightTrackerApplicationTests {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class AirportControllerEndpointTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -48,6 +53,9 @@ public class AirportControllerEndpointTest extends FlightTrackerApplicationTests
         mockMvc.perform( get("/airports/1") )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"));
+
+        mockMvc.perform( get("/airports/1111") )
+                .andExpect(status().isNotFound());
     }
 
 
@@ -62,5 +70,19 @@ public class AirportControllerEndpointTest extends FlightTrackerApplicationTests
     public void test4DeleteAirportQueryParam() throws Exception {
         mockMvc.perform( delete("/airports/?id=2") )
                 .andExpect(status().isOk());
+    }
+
+
+    @Test
+    public void test5DeleteAirportFailurePathParam() throws Exception {
+        mockMvc.perform( delete("/airports/123") )
+                .andExpect(status().isNotFound());
+    }
+
+
+    @Test
+    public void test6DeleteAirportFailureQueryParam() throws Exception {
+        mockMvc.perform( delete("/airports/?id=234") )
+                .andExpect(status().isNotFound());
     }
 }
