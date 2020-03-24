@@ -43,7 +43,7 @@ public class FlightService {
 	public List<Flight> getAllFlights() {
 		log.info("Scheduled task using cron jobs");
 		List<Flight> flights=new ArrayList<>();
-		List<String> iataList=getAiportIatas();
+		List<String> iataList= getAirportIatas();
 		
 		for (String iata:iataList) {
 			restTemplate = new RestTemplate();
@@ -87,18 +87,13 @@ public class FlightService {
 
 	}
 	
-	public List<String> getAiportIatas() {
+	private List<String> getAirportIatas() {
 		List<Airport> airports = airportRepository.findAll();
 		List<String> iataList = new ArrayList<>();
 		for (Airport airport : airports) {
 			iataList.add(airport.getIata());
 		}
 		return iataList;
-	}
-
-
-	public String getApiKey() {
-		return this.apiKey;
 	}
 
 
