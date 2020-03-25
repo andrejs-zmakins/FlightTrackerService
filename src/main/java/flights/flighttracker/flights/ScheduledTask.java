@@ -21,9 +21,13 @@ public class ScheduledTask {
 	@Scheduled(cron = "${cronExpression}")
 	public void updateCache() {
 		log.info("Scheduled job running");
-
-		flightService.getAllFlights();
-
+		
+		try {
+			flightService.getAllFlights();
+		} catch (Exception e) {
+			log.error("Cannot retrieve flights from external API.");
+		}
+		
 		StringBuilder messageBuilder = new StringBuilder();
 		messageBuilder.append("Flights in cache: ");
 
