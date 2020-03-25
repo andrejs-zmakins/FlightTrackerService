@@ -51,9 +51,6 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 	@MockBean
 	private FlightService flightService;
 
-	@Mock
-	private RestTemplate restTemplate;
-
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 
@@ -141,10 +138,6 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 
 		Mockito.when(flightService.getAllFlights()).thenReturn(flights);
 		Mockito.when(flightService.getFlightsForAirport(Mockito.anyString())).thenReturn(flights);
-		
-		Mockito.when(restTemplate
-				.getForObject(Mockito.startsWith("http://api.aviationstack.com/v1/flights?access_key="), Mockito.any()))
-				.thenReturn(flights);
 
 	}
 
@@ -155,22 +148,14 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 				.andExpect(content().string(org.hamcrest.Matchers.containsString("flightNumber")));
 
 	}
-	
-	public static String asJsonString(final Object obj) {
-	    try {
-	        return new ObjectMapper().writeValueAsString(obj);
-	    } catch (Exception e) {
-	        throw new RuntimeException(e);
-	    }
-	}
 
 	@Test
 	public void testSaveOrUpdateFlights() throws Exception {
 
-		mockMvc.perform(MockMvcRequestBuilders.post("/flights/save")).andExpect(status().isOk())
+		mockMvc.perform(MockMvcRequestBuilders.post("/flights/save")).andExpect(status().isCreated())
 				.andExpect(content().contentType("application/json"));
 		// check for update
-		mockMvc.perform(MockMvcRequestBuilders.post("/flights/save")).andExpect(status().isOk())
+		mockMvc.perform(MockMvcRequestBuilders.post("/flights/save")).andExpect(status().isCreated())
 				.andExpect(content().contentType("application/json"));
 	}
 

@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Flight Service test.
  * @author Andrejs Zmakins
  */
-@RunWith(PowerMockRunner.class)
+
 public class FlightServiceTest {
 
     @Mock
