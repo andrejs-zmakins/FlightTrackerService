@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -38,15 +40,19 @@ public class Flight {
 	private String status;
 
 	@Column(name = "flight_number")
+	@NotBlank(message = "Flight Number is mandatory")
 	private String flightNumber;
 
 	@Column(name = "airline")
+	@NotBlank(message = "Airline is mandatory")
 	private String airlineName;
 
 	@Column(name = "departure_airport")
+	@NotBlank(message = "Departure Airport is mandatory")
 	private String departureAirport;
 
 	@Column(name = "departure_airport_iata")
+	@Size(min=3, max=3, message="Departure Airport IATA code should be exactly three characters.")
 	private String departureAirportIata;
 
 	@Column(name = "departure_actual_time")
@@ -56,6 +62,7 @@ public class Flight {
 	private String arrivalAirport;
 
 	@Column(name = "arrival_airport_iata")
+	@Size(min=3, max=3, message="Arrival Airport IATA code should be exactly three characters.")
 	private String arrivalAirportIata;
 
 	@Column(name = "arrival_actual_time")

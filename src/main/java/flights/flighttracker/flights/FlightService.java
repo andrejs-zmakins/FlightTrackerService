@@ -46,8 +46,8 @@ public class FlightService {
 				Flights arriving = restTemplate.getForObject(uriArriving, Flights.class);
 				flights.addAll(arriving.getFlights());
 			}
-		} catch (Exception e) {
-			log.error(e.getMessage());
+		} catch (RuntimeException e) {
+			throw new FlightsRetrievalException(e.getMessage());
 		}
 		StringBuilder messageBuilder = new StringBuilder();
 		messageBuilder.append("Number of flights retrieved is: ");
@@ -70,8 +70,8 @@ public class FlightService {
 			final String uriArriving = API_URI_FLIGHTS + apiKey + "&arr_iata=" + iata;
 			Flights arriving = restTemplate.getForObject(uriArriving, Flights.class);
 			flights.addAll(arriving.getFlights());
-		} catch (Exception e) {
-			log.error(e.getMessage());
+		} catch (RuntimeException e) {
+			throw new FlightsRetrievalException(e.getMessage());
 		}
 		return flights;
 	}
