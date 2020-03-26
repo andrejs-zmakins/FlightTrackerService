@@ -2,6 +2,8 @@ package flights.flighttracker.flights;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -11,6 +13,7 @@ import io.swagger.annotations.ApiModel;
 public class Flights {
 
 	@JsonProperty("data")
+	@Valid
 	List<Flight> data;
 
 	public Flights() {

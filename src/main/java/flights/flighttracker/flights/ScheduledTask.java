@@ -20,14 +20,11 @@ public class ScheduledTask {
 
 	@Scheduled(cron = "${cronExpression}")
 	public void updateCache() {
+		
 		log.info("Scheduled job running");
-		
-		try {
-			flightService.getAllFlights();
-		} catch (Exception e) {
-			log.error("Cannot retrieve flights from external API.");
-		}
-		
+
+		flightService.getAllFlights();
+
 		StringBuilder messageBuilder = new StringBuilder();
 		messageBuilder.append("Flights in cache: ");
 
@@ -36,7 +33,7 @@ public class ScheduledTask {
 		} else {
 			messageBuilder.append(cacheManager.getCache("flights").getNativeCache().toString());
 			String message = messageBuilder.toString();
-			log.info(message);
+			log.debug(message);
 		}
 	}
 }

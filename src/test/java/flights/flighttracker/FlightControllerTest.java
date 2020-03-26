@@ -8,14 +8,15 @@ import flights.flighttracker.flights.FlightRepository;
 import flights.flighttracker.flights.FlightService;
 import flights.flighttracker.flights.Flights;
 
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -58,13 +60,12 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 
 	@Mock
 	private FlightController controller;
-	
+
 	List<Flight> flights;
 
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-
 
 		List<Airport> airportList = new LinkedList<Airport>() {
 			{
@@ -78,6 +79,8 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 
 		List<Flight> dummyArrivingFlights = new ArrayList<>();
 
+		Date date = new Date();
+
 		Flight flight1 = new Flight();
 		flight1.setFlightNumber("31");
 		flight1.setAirlineName("Delta Air Lines");
@@ -85,7 +88,7 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 		flight1.setDepartureAirportIata("LHR");
 		flight1.setArrivalAirport("Hartsfield-jackson Atlanta International");
 		flight1.setArrivalAirportIata("ATL");
-		flight1.setFlightDate(new Date());
+		flight1.setFlightDate(date);
 		flight1.setStatus("scheduled");
 
 		Flight flight2 = new Flight();
@@ -95,7 +98,7 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 		flight2.setDepartureAirportIata("LHR");
 		flight2.setArrivalAirport("Hartsfield-jackson Atlanta International");
 		flight2.setArrivalAirportIata("ATL");
-		flight2.setFlightDate(new Date());
+		flight2.setFlightDate(date);
 		flight2.setStatus("scheduled");
 
 		Flight flight3 = new Flight();
@@ -105,7 +108,7 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 		flight3.setDepartureAirportIata("BOS");
 		flight3.setArrivalAirport("Heathrow");
 		flight3.setArrivalAirportIata("LHR");
-		flight3.setFlightDate(new Date());
+		flight3.setFlightDate(date);
 		flight3.setStatus("scheduled");
 
 		Flight flight4 = new Flight();
@@ -115,7 +118,7 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 		flight4.setDepartureAirportIata("ABZ");
 		flight4.setArrivalAirport("Heathrow");
 		flight4.setArrivalAirportIata("LHR");
-		flight4.setFlightDate(new Date());
+		flight4.setFlightDate(date);
 		flight4.setStatus("scheduled");
 
 		dummyDepartingFlights.add(flight1);
@@ -136,22 +139,19 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 		flights.addAll(departingflights.getFlights());
 		flights.addAll(arrivingflights.getFlights());
 
-		Mockito.when(flightService.getAllFlights()).thenReturn(flights);
-		Mockito.when(flightService.getFlightsForAirport(Mockito.anyString())).thenReturn(flights);
-
 	}
 
 	@Test
 	public void testGetFlights() throws Exception {
-		mockMvc.perform(get("/flights")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json"))
+		Mockito.when(flightService.getAllFlights()).thenReturn(flights);
+		mockMvc.perform(get("/flights")).andExpect(status().isOk()).andExpect(content().contentType("application/json"))
 				.andExpect(content().string(org.hamcrest.Matchers.containsString("flightNumber")));
 
 	}
 
 	@Test
 	public void testSaveOrUpdateFlights() throws Exception {
-
+		Mockito.when(flightService.getAllFlights()).thenReturn(flights);
 		mockMvc.perform(MockMvcRequestBuilders.post("/flights/save")).andExpect(status().isCreated())
 				.andExpect(content().contentType("application/json"));
 		// check for update
@@ -168,10 +168,31 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 
 	@Test
 	public void testGetFlightsForAirportIata() throws Exception {
-
+		Mockito.when(flightService.getFlightsForAirport(Mockito.anyString())).thenReturn(flights);
 		mockMvc.perform(get("/flights/LHR")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"))
 				.andExpect(content().string(org.hamcrest.Matchers.containsString("flightNumber")));
+	}
+
+	@Test
+	public void testGetFlightsWithInvalidApiKey() throws Exception {
+		flightService.setApiKey("invalidApiKey");
+		mockMvc.perform(get("/flights")).andExpect(status().isInternalServerError())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("No flights received")));
+	}
+
+	@Test
+	public void testSaveFlightsWithInvalidApiKey() throws Exception {
+		flightService.setApiKey("invalidApiKey");
+		mockMvc.perform(MockMvcRequestBuilders.post("/flights/save")).andExpect(status().isInternalServerError())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("No flights received")));
+	}
+
+	@Test
+	public void testGetFlightsForAirportIataWithInvalidApiKey() throws Exception {
+		flightService.setApiKey("invalidApiKey");
+		mockMvc.perform(get("/flights/LHR")).andExpect(status().isInternalServerError())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("No flights received")));
 	}
 
 }
