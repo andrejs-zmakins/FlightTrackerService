@@ -1,18 +1,17 @@
 package flights.flighttracker.flights;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import flights.flighttracker.airport.Airport;
+import flights.flighttracker.airport.AirportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import flights.flighttracker.airport.Airport;
-import flights.flighttracker.airport.AirportRepository;
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FlightService {
@@ -25,6 +24,7 @@ public class FlightService {
 
 	private final AirportRepository airportRepository;
 
+	@Autowired
 	public FlightService(AirportRepository airportRepository) {
 		this.airportRepository = airportRepository;
 	}
