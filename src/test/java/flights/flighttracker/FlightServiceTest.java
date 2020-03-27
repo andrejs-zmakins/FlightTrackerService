@@ -2,18 +2,20 @@ package flights.flighttracker;
 
 import flights.flighttracker.airport.Airport;
 import flights.flighttracker.airport.AirportRepository;
+import flights.flighttracker.flights.Flight;
+import flights.flighttracker.flights.FlightRepository;
 import flights.flighttracker.flights.FlightService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -28,6 +30,9 @@ public class FlightServiceTest {
 
     @Mock
     private AirportRepository airportRepository;
+    
+    @Mock
+    private FlightRepository flightRepository;
 
 
     private FlightService flightService;
@@ -82,5 +87,26 @@ public class FlightServiceTest {
     public void testGetFlightsForAirport() {
         Assert.isTrue(flightService.getFlightsForAirport("LHR") != null,
                 "Some data must be returned");
+    }
+    
+    @Test
+    public void testSaveInvalidFlight(){
+ 
+    	List<Flight> incorrectFlights = new ArrayList<>();
+		Flight flightIncorrect = new Flight();
+		flightIncorrect.setFlightNumber("1307");
+		flightIncorrect.setAirlineName("British Airways");
+		flightIncorrect.setDepartureAirport("Dyce");
+		flightIncorrect.setDepartureAirportIata("ABZtry");
+		flightIncorrect.setArrivalAirport("Heathrow");
+		flightIncorrect.setArrivalAirportIata("LHRterter");
+		flightIncorrect.setFlightDate(new Date());
+		flightIncorrect.setStatus("scheduled");
+		
+		incorrectFlights = new ArrayList<>();
+		
+		incorrectFlights.add(flightIncorrect);
+    	Assert.isTrue(flightRepository.save(flightIncorrect)==null, "Flight is not saved.");
+    
     }
 }
