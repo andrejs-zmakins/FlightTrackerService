@@ -20,11 +20,11 @@ import io.swagger.annotations.ApiModel;
 
 @ApiModel(description = "Details about the flight.")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Table(uniqueConstraints=
-		@UniqueConstraint(columnNames={"flight_date", "flight_number", "airline", "departure_airport"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "flight_date", "flight_number", "airline",
+		"departure_airport" }))
 @Entity(name = "Flight")
 public class Flight {
-	
+
 	@Id
 	@GeneratedValue
 	@Column(name = "id")
@@ -52,7 +52,7 @@ public class Flight {
 	private String departureAirport;
 
 	@Column(name = "departure_airport_iata")
-	@Size(min=3, max=3, message="Departure Airport IATA code should be exactly three characters.")
+	@Size(min = 3, max = 3, message = "Departure Airport IATA code should be exactly three characters.")
 	private String departureAirportIata;
 
 	@Column(name = "departure_actual_time")
@@ -62,14 +62,14 @@ public class Flight {
 	private String arrivalAirport;
 
 	@Column(name = "arrival_airport_iata")
-	@Size(min=3, max=3, message="Arrival Airport IATA code should be exactly three characters.")
+	@Size(min = 3, max = 3, message = "Arrival Airport IATA code should be exactly three characters.")
 	private String arrivalAirportIata;
 
 	@Column(name = "arrival_actual_time")
 	private String arrivalActualTime;
 
 	public Flight() {
-		//do nothing because default constructor needed by JPA
+		// do nothing because default constructor needed by JPA
 	}
 
 	public Date getFlightDate() {
@@ -159,8 +159,6 @@ public class Flight {
 	public void setArrivalActualTime(String arrivalActualTime) {
 		this.arrivalActualTime = arrivalActualTime;
 	}
-	
-	
 
 	@JsonProperty("arrival")
 	private void unpackNestedArrival(Map<String, Object> arrival) {

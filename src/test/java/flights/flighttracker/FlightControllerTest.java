@@ -22,9 +22,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.util.NestedServletException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -62,6 +65,8 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 	private FlightController controller;
 
 	List<Flight> flights;
+	
+	List<Flight> incorrectFlights;
 
 	@Before
 	public void setup() {
@@ -120,6 +125,8 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 		flight4.setArrivalAirportIata("LHR");
 		flight4.setFlightDate(date);
 		flight4.setStatus("scheduled");
+		
+		
 
 		dummyDepartingFlights.add(flight1);
 		dummyDepartingFlights.add(flight2);
@@ -138,6 +145,22 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 
 		flights.addAll(departingflights.getFlights());
 		flights.addAll(arrivingflights.getFlights());
+		
+		incorrectFlights = new ArrayList<>();
+		
+		Flight flightIncorrect = new Flight();
+		flightIncorrect.setFlightNumber("1307");
+		flightIncorrect.setAirlineName("British Airways");
+		flightIncorrect.setDepartureAirport("Dyce");
+		flightIncorrect.setDepartureAirportIata("ABZtry");
+		flightIncorrect.setArrivalAirport("Heathrow");
+		flightIncorrect.setArrivalAirportIata("LHRterter");
+		flightIncorrect.setFlightDate(date);
+		flightIncorrect.setStatus("scheduled");
+		
+		incorrectFlights = new ArrayList<>();
+		
+		incorrectFlights.add(flightIncorrect);
 
 	}
 
@@ -193,6 +216,14 @@ public class FlightControllerTest extends FlightTrackerApplicationTests {
 		flightService.setApiKey("invalidApiKey");
 		mockMvc.perform(get("/flights/LHR")).andExpect(status().isInternalServerError())
 				.andExpect(content().string(org.hamcrest.Matchers.containsString("No flights received")));
+	}
+	
+	@Test
+	public void testSaveFlightsException() throws Throwable {
+		Mockito.when(flightService.getAllFlights()).thenReturn(incorrectFlights);
+		mockMvc.perform(MockMvcRequestBuilders.post("/flights/save")).andExpect(status().isBadRequest())
+		.andExpect(content().string(org.hamcrest.Matchers.containsString("Error while saving flights")));
+
 	}
 
 }

@@ -2,6 +2,10 @@ package flights.flighttracker.flights;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.RollbackException;
+import javax.validation.ConstraintViolationException;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -10,15 +14,14 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 
 @Api(value = "FlightController")
 @Validated
@@ -89,8 +92,10 @@ public class FlightController {
 			return new ResponseEntity<>(NO_FLIGHTS_RECEIVED, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		for (Flight flight : receivedFlights) {
-			try {
+		try {
+
+			for (Flight flight : receivedFlights) {
+
 				Flight existingFlight = flightRepository.findByUniqueContraint(flight.getFlightDate(),
 						flight.getFlightNumber(), flight.getAirlineName(), flight.getDepartureAirport());
 				if (existingFlight == null) {
@@ -107,9 +112,10 @@ public class FlightController {
 					flightRepository.save(existingFlight);
 					savedFlights.add(existingFlight);
 				}
-			} catch (DataIntegrityViolationException e) {
-				log.error(e.getMessage());
 			}
+		} catch (ConstraintViolationException | RollbackException | TransactionSystemException e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>("Error while saving flights", HttpStatus.BAD_REQUEST);
 		}
 
 		StringBuilder messageBuilder = new StringBuilder();
